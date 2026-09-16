@@ -1,0 +1,1768 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Finance Manager</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:Arial,Helvetica,sans-serif;
+ background:linear-gradient(135deg,#eef7ff,#f8faff);
+ color:#172033;
+}
+
+header{
+ background:linear-gradient(135deg,#075985,#0284c7,#06b6d4);
+ color:#fff;
+ padding:18px;
+ position:sticky;
+ top:0;
+ z-index:20;
+ box-shadow:0 5px 20px #0002;
+}
+
+.head{
+ max-width:1250px;
+ margin:auto;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.logo{
+ font-size:22px;
+ font-weight:bold;
+}
+
+.sync{
+ background:#ffffff25;
+ padding:8px 12px;
+ border-radius:20px;
+ font-size:12px;
+}
+
+.container{
+ max-width:1250px;
+ margin:auto;
+ padding:16px;
+}
+
+.cards{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(175px,1fr));
+ gap:13px;
+}
+
+.card{
+ background:#fff;
+ border-radius:20px;
+ padding:18px;
+ box-shadow:0 7px 25px #0f172a10;
+ border:1px solid #e8eef5;
+}
+
+.card small{
+ color:#64748b;
+}
+
+.amount{
+ font-size:25px;
+ font-weight:bold;
+ margin-top:8px;
+}
+
+.c-income{border-top:5px solid #10b981}
+.c-expense{border-top:5px solid #ef4444}
+.c-balance{border-top:5px solid #3b82f6}
+.c-receive{border-top:5px solid #06b6d4}
+.c-give{border-top:5px solid #8b5cf6}
+.c-pending{border-top:5px solid #f59e0b}
+
+.green{color:#059669}
+.red{color:#dc2626}
+.blue{color:#2563eb}
+.cyan{color:#0891b2}
+.purple{color:#7c3aed}
+.orange{color:#d97706}
+
+nav{
+ display:flex;
+ gap:8px;
+ overflow:auto;
+ margin:18px 0;
+ padding-bottom:5px;
+}
+
+nav button{
+ border:0;
+ background:#fff;
+ color:#334155;
+ padding:12px 17px;
+ border-radius:14px;
+ white-space:nowrap;
+ cursor:pointer;
+ box-shadow:0 3px 10px #0000000a;
+}
+
+nav button.active{
+ background:linear-gradient(135deg,#0284c7,#06b6d4);
+ color:#fff;
+}
+
+.section{display:none}
+.section.active{display:block}
+
+.form{
+ background:#fff;
+ padding:18px;
+ border-radius:20px;
+ margin-bottom:15px;
+ box-shadow:0 7px 25px #0000000b;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+ gap:12px;
+}
+
+label{
+ display:block;
+ color:#64748b;
+ font-size:12px;
+ margin-bottom:5px;
+}
+
+input,select,textarea{
+ width:100%;
+ padding:12px;
+ border:1px solid #dbe5ef;
+ border-radius:12px;
+ outline:none;
+}
+
+input:focus,select:focus,textarea:focus{
+ border-color:#06b6d4;
+ box-shadow:0 0 0 3px #06b6d420;
+}
+
+textarea{
+ min-height:75px;
+ resize:vertical;
+}
+
+button{
+ border:0;
+ border-radius:11px;
+ padding:11px 15px;
+ cursor:pointer;
+ color:#fff;
+ background:#0284c7;
+}
+
+.btn-green{background:#059669}
+.btn-red{background:#dc2626}
+.btn-purple{background:#7c3aed}
+.btn-orange{background:#f59e0b}
+.btn-gray{background:#64748b}
+
+.folder-grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+ gap:12px;
+ margin-bottom:15px;
+}
+
+.folder{
+ padding:20px;
+ border-radius:20px;
+ color:#fff;
+ cursor:pointer;
+ box-shadow:0 8px 20px #0002;
+}
+
+.folder.receive{
+ background:linear-gradient(135deg,#0891b2,#06b6d4);
+}
+
+.folder.give{
+ background:linear-gradient(135deg,#7c3aed,#a855f7);
+}
+
+.folder.pending{
+ background:linear-gradient(135deg,#ea580c,#f59e0b);
+}
+
+.folder.settled{
+ background:linear-gradient(135deg,#059669,#10b981);
+}
+
+.folder b{
+ font-size:15px;
+}
+
+.folder .big{
+ font-size:25px;
+ font-weight:bold;
+ margin-top:7px;
+}
+
+.person-grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+ gap:13px;
+}
+
+.person{
+ background:#fff;
+ border-radius:20px;
+ padding:17px;
+ box-shadow:0 7px 25px #0000000d;
+ border-left:6px solid #06b6d4;
+}
+
+.person.give{
+ border-left-color:#8b5cf6;
+}
+
+.person h3{
+ margin:0 0 8px;
+}
+
+.person .pending{
+ font-size:23px;
+ font-weight:bold;
+ color:#dc2626;
+ margin:8px 0;
+}
+
+.progress{
+ height:9px;
+ background:#e2e8f0;
+ border-radius:20px;
+ overflow:hidden;
+ margin:10px 0;
+}
+
+.progress div{
+ height:100%;
+ background:linear-gradient(90deg,#06b6d4,#10b981);
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+ background:#fff;
+ border-radius:15px;
+ overflow:hidden;
+}
+
+th,td{
+ padding:11px;
+ border-bottom:1px solid #edf2f7;
+ text-align:left;
+ font-size:13px;
+}
+
+th{
+ background:#f1f5f9;
+ color:#475569;
+}
+
+.table-wrap{
+ overflow:auto;
+}
+
+.empty{
+ text-align:center;
+ padding:35px;
+ color:#64748b;
+ background:#fff;
+ border-radius:16px;
+}
+
+.modal{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:#0008;
+ z-index:100;
+ align-items:center;
+ justify-content:center;
+ padding:15px;
+}
+
+.modal-box{
+ background:#fff;
+ width:min(650px,100%);
+ max-height:92vh;
+ overflow:auto;
+ border-radius:22px;
+ padding:20px;
+}
+
+.modal-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:15px;
+}
+
+.history{
+ border-left:3px solid #06b6d4;
+ padding-left:12px;
+ margin:10px 0;
+}
+
+.history-item{
+ background:#f8fafc;
+ padding:11px;
+ border-radius:12px;
+ margin-bottom:8px;
+}
+
+.analysis-row{
+ display:flex;
+ justify-content:space-between;
+ padding:12px;
+ border-bottom:1px solid #e2e8f0;
+}
+
+@media(max-width:600px){
+ .container{padding:10px}
+ .amount{font-size:21px}
+ .logo{font-size:18px}
+ th,td{font-size:11px;padding:8px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="head">
+<div class="logo">💰 My Finance Manager</div>
+<div class="sync" id="sync">Connecting...</div>
+</div>
+</header>
+
+<div class="container">
+
+<!-- TOP CARDS -->
+
+<div class="cards">
+
+<div class="card c-income">
+<small>💰 Total Income</small>
+<div class="amount green" id="totalIncome">₹0</div>
+</div>
+
+<div class="card c-expense">
+<small>💸 Total Expense</small>
+<div class="amount red" id="totalExpense">₹0</div>
+</div>
+
+<div class="card c-balance">
+<small>🟢 Balance</small>
+<div class="amount blue" id="balance">₹0</div>
+</div>
+
+<div class="card c-receive">
+<small>📥 To Receive</small>
+<div class="amount cyan" id="receiveTotal">₹0</div>
+</div>
+
+<div class="card c-give">
+<small>📤 To Give</small>
+<div class="amount purple" id="giveTotal">₹0</div>
+</div>
+
+</div>
+
+<nav>
+<button class="active" onclick="tab('dashboard',this)">🏠 Dashboard</button>
+<button onclick="tab('transactions',this)">💳 Transactions</button>
+<button onclick="tab('people',this)">👥 Amount Details</button>
+<button onclick="tab('analysis',this)">📊 Analysis</button>
+<button onclick="tab('statement',this)">📄 Statement</button>
+<button onclick="tab('settings',this)">⚙️ Settings</button>
+</nav>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="section active">
+
+<div class="form">
+
+<div class="grid">
+
+<div>
+<label>Month</label>
+<input type="month" id="dashMonth" onchange="render()">
+</div>
+
+<div>
+<label>Year</label>
+<select id="dashYear" onchange="render()"></select>
+</div>
+
+</div>
+
+</div>
+
+<div class="cards">
+
+<div class="card c-income">
+<small>Selected Month Income</small>
+<div class="amount green" id="monthIncome">₹0</div>
+</div>
+
+<div class="card c-expense">
+<small>Selected Month Expense</small>
+<div class="amount red" id="monthExpense">₹0</div>
+</div>
+
+<div class="card c-balance">
+<small>Monthly Savings</small>
+<div class="amount blue" id="monthSavings">₹0</div>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- TRANSACTIONS -->
+
+<section id="transactions" class="section">
+
+<div class="form">
+
+<h2>➕ Add Transaction</h2>
+
+<div class="grid">
+
+<div>
+<label>Date</label>
+<input type="date" id="tDate">
+</div>
+
+<div>
+<label>Type</label>
+<select id="tType" onchange="loadCategories()">
+<option>Income</option>
+<option>Expense</option>
+</select>
+</div>
+
+<div>
+<label>Category</label>
+<select id="tCategory"></select>
+</div>
+
+<div>
+<label>Amount</label>
+<input type="number" id="tAmount" min="0">
+</div>
+
+<div>
+<label>Payment Mode</label>
+<select id="tMode">
+<option>Cash</option>
+<option>UPI</option>
+<option>Bank</option>
+<option>Card</option>
+<option>Other</option>
+</select>
+</div>
+
+</div>
+
+<br>
+
+<label>Description</label>
+<textarea id="tDescription"></textarea>
+
+<br><br>
+
+<button class="btn-green" onclick="saveTransaction()">Save Transaction</button>
+
+</div>
+
+<div id="transactionList"></div>
+
+</section>
+
+
+<!-- PEOPLE -->
+
+<section id="people" class="section">
+
+<div class="form">
+
+<h2>👥 Amount Accounts</h2>
+
+<div class="grid">
+
+<div>
+<label>Person Name</label>
+<input id="pName" placeholder="Name">
+</div>
+
+<div>
+<label>Mobile</label>
+<input id="pMobile">
+</div>
+
+<div>
+<label>Account</label>
+<select id="pDirection">
+<option value="RECEIVE">📥 I Should Receive</option>
+<option value="GIVE">📤 I Should Give</option>
+</select>
+</div>
+
+<div>
+<label>Total Amount</label>
+<input type="number" id="pAmount">
+</div>
+
+<div>
+<label>Already Paid / Received</label>
+<input type="number" id="pPaid" value="0">
+</div>
+
+<div>
+<label>Due Date</label>
+<input type="date" id="pDue">
+</div>
+
+</div>
+
+<br>
+
+<label>Notes</label>
+<textarea id="pNotes"></textarea>
+
+<br><br>
+
+<button class="btn-green" onclick="createPerson()">
+Create Amount Account
+</button>
+
+</div>
+
+
+<div class="folder-grid">
+
+<div class="folder receive" onclick="peopleFilter='RECEIVE';renderPeople()">
+<div>📥 TO RECEIVE</div>
+<div class="big" id="folderReceive">₹0</div>
+</div>
+
+<div class="folder give" onclick="peopleFilter='GIVE';renderPeople()">
+<div>📤 TO GIVE</div>
+<div class="big" id="folderGive">₹0</div>
+</div>
+
+<div class="folder pending" onclick="peopleFilter='PENDING';renderPeople()">
+<div>🔴 PENDING</div>
+<div class="big" id="folderPending">₹0</div>
+</div>
+
+<div class="folder settled" onclick="peopleFilter='SETTLED';renderPeople()">
+<div>✅ SETTLED</div>
+<div class="big" id="folderSettled">₹0</div>
+</div>
+
+</div>
+
+<div id="peopleGrid" class="person-grid"></div>
+
+</section>
+
+
+<!-- ANALYSIS -->
+
+<section id="analysis" class="section">
+
+<div class="form">
+
+<div class="grid">
+
+<div>
+<label>Analysis Month</label>
+<input type="month" id="analysisMonth" onchange="renderAnalysis()">
+</div>
+
+<div>
+<label>Analysis Year</label>
+<select id="analysisYear" onchange="renderAnalysis()"></select>
+</div>
+
+</div>
+
+</div>
+
+<div id="analysisContent"></div>
+
+</section>
+
+
+<!-- STATEMENT -->
+
+<section id="statement" class="section">
+
+<div class="form">
+
+<div class="grid">
+
+<div>
+<label>Statement Month</label>
+<input type="month" id="statementMonth" onchange="renderStatement()">
+</div>
+
+<div>
+<label>Statement Year</label>
+<select id="statementYear" onchange="renderStatement()"></select>
+</div>
+
+</div>
+
+</div>
+
+<div id="statementContent"></div>
+
+</section>
+
+
+<!-- SETTINGS -->
+
+<section id="settings" class="section">
+
+<div class="form">
+
+<h2>⚙️ Settings</h2>
+
+<label>Currency</label>
+<input id="currency" value="₹">
+
+<br><br>
+
+<button onclick="saveSetting()">Save Settings</button>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- PERSON MODAL -->
+
+<div class="modal" id="modal">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2 id="modalName">Person Account</h2>
+
+<button class="btn-gray" onclick="closeModal()">
+✕
+</button>
+
+</div>
+
+<div id="personDetails"></div>
+
+</div>
+
+</div>
+
+
+<!-- PAYMENT MODAL -->
+
+<div class="modal" id="paymentModal">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2>💰 Add Payment</h2>
+
+<button class="btn-gray" onclick="closePayment()">
+✕
+</button>
+
+</div>
+
+<div id="paymentPerson"></div>
+
+<div class="form">
+
+<label>Payment Date</label>
+<input type="date" id="payDate">
+
+<label>Amount</label>
+<input type="number" id="payAmount" min="1">
+
+<label>Payment Mode</label>
+<select id="payMode">
+<option>Cash</option>
+<option>UPI</option>
+<option>Bank</option>
+<option>Card</option>
+<option>Other</option>
+</select>
+
+<br><br>
+
+<button class="btn-green" onclick="submitPayment()">
+Save Payment
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const API_URL=
+'https://script.google.com/macros/s/AKfycbw-RbRfUzx9ghpAJPuoskQMK2SC7wjrN2TRtrOiYJgibBGYOMhNPIjWBGoHC-JOsBja/exec';
+
+let DATA={
+ transactions:[],
+ people:[],
+ categories:[],
+ settings:[]
+};
+
+let peopleFilter='';
+let selectedPerson=null;
+
+const $=id=>document.getElementById(id);
+
+
+/* ================= API ================= */
+
+async function api(action,data={}){
+
+ const body={
+   action:action,
+   ...data
+ };
+
+ const response=await fetch(API_URL,{
+   method:'POST',
+   headers:{
+     'Content-Type':'text/plain;charset=utf-8'
+   },
+   body:JSON.stringify(body)
+ });
+
+ const text=await response.text();
+
+ try{
+   return JSON.parse(text);
+ }catch(e){
+   throw new Error(text || 'Invalid server response');
+ }
+}
+
+
+/*
+  IMPORTANT:
+  Code.gs below also needs doPost().
+*/
+
+async function loadData(){
+
+ $('sync').textContent='⟳ Syncing...';
+
+ try{
+
+   const result=await api('getData');
+
+   DATA=result;
+
+   populate();
+
+   render();
+
+   $('sync').textContent=
+     '✓ Synced '+new Date().toLocaleTimeString();
+
+ }catch(e){
+
+   console.error(e);
+
+   $('sync').textContent='⚠ Sync Error';
+
+ }
+}
+
+
+/* ================= SETUP ================= */
+
+function populate(){
+
+ const now=new Date();
+
+ const month=
+   now.getFullYear()+'-'+
+   String(now.getMonth()+1).padStart(2,'0');
+
+ ['dashMonth','analysisMonth','statementMonth']
+ .forEach(id=>{
+   $(id).value=month;
+ });
+
+ const years=[];
+
+ for(
+   let y=now.getFullYear()-5;
+   y<=now.getFullYear()+2;
+   y++
+ ){
+   years.push(y);
+ }
+
+ ['dashYear','analysisYear','statementYear']
+ .forEach(id=>{
+
+   $(id).innerHTML=
+     years.map(y=>
+       `<option value="${y}">${y}</option>`
+     ).join('');
+
+   $(id).value=now.getFullYear();
+
+ });
+
+ loadCategories();
+
+ $('tDate').value=
+   new Date().toISOString().slice(0,10);
+
+ $('payDate').value=
+   new Date().toISOString().slice(0,10);
+}
+
+
+function loadCategories(){
+
+ const type=$('tType').value;
+
+ $('tCategory').innerHTML=
+   DATA.categories
+   .filter(c=>
+     c.Type===type &&
+     c.Status==='Active'
+   )
+   .map(c=>
+     `<option>${esc(c.Name)}</option>`
+   )
+   .join('');
+}
+
+
+/* ================= TABS ================= */
+
+function tab(id,button){
+
+ document.querySelectorAll('.section')
+ .forEach(x=>x.classList.remove('active'));
+
+ $(id).classList.add('active');
+
+ document.querySelectorAll('nav button')
+ .forEach(x=>x.classList.remove('active'));
+
+ button.classList.add('active');
+
+ render();
+}
+
+
+/* ================= RENDER ================= */
+
+function render(){
+
+ renderDashboard();
+ renderTransactions();
+ renderPeople();
+ renderAnalysis();
+ renderStatement();
+
+}
+
+
+/* ================= DASHBOARD ================= */
+
+function renderDashboard(){
+
+ let income=0;
+ let expense=0;
+
+ DATA.transactions.forEach(t=>{
+
+   const a=Number(t.Amount)||0;
+
+   if(t.Type==='Income')
+     income+=a;
+
+   if(t.Type==='Expense')
+     expense+=a;
+
+ });
+
+ let receive=0;
+ let give=0;
+
+ DATA.people.forEach(p=>{
+
+   const pending=
+     Math.max(
+       0,
+       Number(p.PendingAmount)||0
+     );
+
+   if(p.Direction==='RECEIVE')
+     receive+=pending;
+
+   if(p.Direction==='GIVE')
+     give+=pending;
+
+ });
+
+ $('totalIncome').textContent=money(income);
+ $('totalExpense').textContent=money(expense);
+ $('balance').textContent=money(income-expense);
+
+ $('receiveTotal').textContent=money(receive);
+ $('giveTotal').textContent=money(give);
+
+ let mi=0;
+ let me=0;
+
+ const month=$('dashMonth').value;
+
+ DATA.transactions.forEach(t=>{
+
+   if(t.Month!==month)return;
+
+   const a=Number(t.Amount)||0;
+
+   if(t.Type==='Income')mi+=a;
+   if(t.Type==='Expense')me+=a;
+
+ });
+
+ $('monthIncome').textContent=money(mi);
+ $('monthExpense').textContent=money(me);
+ $('monthSavings').textContent=money(mi-me);
+
+ $('folderReceive').textContent=money(receive);
+ $('folderGive').textContent=money(give);
+
+ let pending=0;
+ let settled=0;
+
+ DATA.people.forEach(p=>{
+
+   const x=Number(p.PendingAmount)||0;
+
+   pending+=x;
+
+   if(x===0)
+     settled++;
+ });
+
+ $('folderPending').textContent=money(pending);
+ $('folderSettled').textContent=settled+' Accounts';
+}
+
+
+/* ================= TRANSACTION ================= */
+
+async function saveTransaction(){
+
+ const amount=Number($('tAmount').value);
+
+ if(amount<=0){
+   alert('Amount enter செய்யுங்கள்');
+   return;
+ }
+
+ $('sync').textContent='Saving...';
+
+ try{
+
+   const result=await api(
+     'saveTransaction',
+     {
+       data:{
+         Date:$('tDate').value,
+         Type:$('tType').value,
+         Category:$('tCategory').value,
+         Description:$('tDescription').value,
+         Amount:amount,
+         PaymentMode:$('tMode').value
+       }
+     }
+   );
+
+   if(!result.success)
+     throw new Error(result.message||'Save failed');
+
+   $('tAmount').value='';
+   $('tDescription').value='';
+
+   await loadData();
+
+ }catch(e){
+
+   alert(e.message);
+
+ }
+}
+
+
+function renderTransactions(){
+
+ let arr=[...DATA.transactions];
+
+ arr.sort((a,b)=>
+   new Date(b.Date)-new Date(a.Date)
+ );
+
+ if(!arr.length){
+
+   $('transactionList').innerHTML=
+     '<div class="empty">No transactions yet</div>';
+
+   return;
+ }
+
+ $('transactionList').innerHTML=`
+
+ <div class="form">
+
+ <h3>💳 Transaction History</h3>
+
+ <div class="table-wrap">
+
+ <table>
+
+ <tr>
+ <th>Date</th>
+ <th>Type</th>
+ <th>Category</th>
+ <th>Description</th>
+ <th>Amount</th>
+ <th>Mode</th>
+ </tr>
+
+ ${arr.map(t=>`
+
+ <tr>
+
+ <td>${date(t.Date)}</td>
+
+ <td>
+ ${t.Type==='Income'
+   ?'🟢 Income'
+   :'🔴 Expense'}
+ </td>
+
+ <td>${esc(t.Category)}</td>
+
+ <td>${esc(t.Description)}</td>
+
+ <td><b>${money(t.Amount)}</b></td>
+
+ <td>${esc(t.PaymentMode)}</td>
+
+ </tr>
+
+ `).join('')}
+
+ </table>
+
+ </div>
+
+ </div>
+
+ `;
+
+}
+
+
+/* ================= PEOPLE ================= */
+
+async function createPerson(){
+
+ const name=$('pName').value.trim();
+ const total=Number($('pAmount').value);
+ const paid=Number($('pPaid').value||0);
+
+ if(!name||total<=0){
+   alert('Name மற்றும் amount enter செய்யுங்கள்');
+   return;
+ }
+
+ if(paid>total){
+   alert('Paid amount அதிகமாக இருக்கக்கூடாது');
+   return;
+ }
+
+ try{
+
+   const result=await api(
+     'savePerson',
+     {
+       data:{
+         Name:name,
+         Mobile:$('pMobile').value,
+         Direction:$('pDirection').value,
+         TotalAmount:total,
+         PaidAmount:paid,
+         PendingAmount:total-paid,
+         DueDate:$('pDue').value,
+         Notes:$('pNotes').value,
+         Status:'Active'
+       }
+     }
+   );
+
+   if(!result.success)
+     throw new Error(result.message||'Save failed');
+
+   $('pName').value='';
+   $('pMobile').value='';
+   $('pAmount').value='';
+   $('pPaid').value='0';
+   $('pDue').value='';
+   $('pNotes').value='';
+
+   await loadData();
+
+ }catch(e){
+
+   alert(e.message);
+
+ }
+}
+
+
+function renderPeople(){
+
+ let arr=DATA.people
+   .filter(p=>p.Status!=='Deleted');
+
+ if(peopleFilter==='RECEIVE')
+   arr=arr.filter(p=>p.Direction==='RECEIVE');
+
+ if(peopleFilter==='GIVE')
+   arr=arr.filter(p=>p.Direction==='GIVE');
+
+ if(peopleFilter==='PENDING')
+   arr=arr.filter(p=>
+     Number(p.PendingAmount)>0
+   );
+
+ if(peopleFilter==='SETTLED')
+   arr=arr.filter(p=>
+     Number(p.PendingAmount)===0
+   );
+
+ if(!arr.length){
+
+   $('peopleGrid').innerHTML=
+     '<div class="empty">No accounts found</div>';
+
+   return;
+ }
+
+ $('peopleGrid').innerHTML=
+ arr.map(p=>personCard(p)).join('');
+}
+
+
+function personCard(p){
+
+ const total=Number(p.TotalAmount)||0;
+ const paid=Number(p.PaidAmount)||0;
+ const pending=Number(p.PendingAmount)||0;
+
+ const percent=
+   total>0
+   ?Math.min(100,(paid/total)*100)
+   :0;
+
+ return `
+
+ <div class="person ${p.Direction==='GIVE'?'give':''}">
+
+ <h3>
+ ${p.Direction==='RECEIVE'?'📥':'📤'}
+ ${esc(p.Name)}
+ </h3>
+
+ <small>${p.Direction==='RECEIVE'
+   ?'Amount to Receive'
+   :'Amount to Give'}
+ </small>
+
+ <div class="pending">
+ ${money(pending)}
+ </div>
+
+ <div class="progress">
+ <div style="width:${percent}%"></div>
+ </div>
+
+ <div>
+ Total: <b>${money(total)}</b>
+ </div>
+
+ <div>
+ Paid: <b>${money(paid)}</b>
+ </div>
+
+ <div>
+ Pending: <b>${money(pending)}</b>
+ </div>
+
+ <br>
+
+ <button onclick="openPerson('${p.ID}')">
+ 📂 Open Account
+ </button>
+
+ <button class="btn-green"
+ onclick="openPayment('${p.ID}')">
+ + Payment
+ </button>
+
+ </div>
+
+ `;
+}
+
+
+/* ================= PERSON ACCOUNT ================= */
+
+function openPerson(id){
+
+ selectedPerson=
+   DATA.people.find(
+     p=>String(p.ID)===String(id)
+   );
+
+ if(!selectedPerson)return;
+
+ const p=selectedPerson;
+
+ const history=
+   DATA.transactions
+   .filter(t=>
+     String(t.PersonID)===String(p.ID)
+   )
+   .sort((a,b)=>
+     new Date(b.Date)-new Date(a.Date)
+   );
+
+ $('modalName').textContent=
+   (p.Direction==='RECEIVE'?'📥 ':'📤 ')+p.Name;
+
+ $('personDetails').innerHTML=`
+
+ <div class="cards">
+
+ <div class="card c-income">
+ <small>Total</small>
+ <div class="amount">
+ ${money(p.TotalAmount)}
+ </div>
+ </div>
+
+ <div class="card c-balance">
+ <small>Paid</small>
+ <div class="amount">
+ ${money(p.PaidAmount)}
+ </div>
+ </div>
+
+ <div class="card c-pending">
+ <small>Pending</small>
+ <div class="amount orange">
+ ${money(p.PendingAmount)}
+ </div>
+ </div>
+
+ </div>
+
+ <br>
+
+ <div class="form">
+
+ <p><b>📱 Mobile:</b> ${esc(p.Mobile)}</p>
+
+ <p><b>📅 Due Date:</b>
+ ${date(p.DueDate)}</p>
+
+ <p><b>📝 Notes:</b>
+ ${esc(p.Notes)}</p>
+
+ <button class="btn-green"
+ onclick="openPayment('${p.ID}')">
+ 💰 Add Payment
+ </button>
+
+ </div>
+
+ <h3>📜 Payment History</h3>
+
+ <div class="history">
+
+ ${
+ history.length
+ ?history.map(t=>`
+
+ <div class="history-item">
+
+ <b>${date(t.Date)}</b>
+
+ <br>
+
+ ${t.Type==='Income'
+   ?'🟢 Received'
+   :'🔴 Given'}
+
+ <br>
+
+ <b>${money(t.Amount)}</b>
+
+ <br>
+
+ ${esc(t.Category)}
+
+ </div>
+
+ `).join('')
+ :'No payment history'
+ }
+
+ </div>
+
+ `;
+
+ $('modal').style.display='flex';
+}
+
+
+function closeModal(){
+ $('modal').style.display='none';
+}
+
+
+/* ================= PAYMENT ================= */
+
+function openPayment(id){
+
+ selectedPerson=
+   DATA.people.find(
+     p=>String(p.ID)===String(id)
+   );
+
+ if(!selectedPerson)return;
+
+ $('paymentPerson').innerHTML=`
+
+ <div class="card c-pending">
+
+ <b>${esc(selectedPerson.Name)}</b>
+
+ <br>
+
+ Total:
+ ${money(selectedPerson.TotalAmount)}
+
+ <br>
+
+ Paid:
+ ${money(selectedPerson.PaidAmount)}
+
+ <br>
+
+ <span class="orange">
+ Pending:
+ ${money(selectedPerson.PendingAmount)}
+ </span>
+
+ </div>
+
+ <br>
+
+ `;
+
+ $('payAmount').value='';
+ $('paymentModal').style.display='flex';
+}
+
+
+function closePayment(){
+ $('paymentModal').style.display='none';
+}
+
+
+async function submitPayment(){
+
+ if(!selectedPerson)return;
+
+ const amount=
+   Number($('payAmount').value);
+
+ if(amount<=0){
+   alert('Payment amount enter செய்யுங்கள்');
+   return;
+ }
+
+ if(amount>
+    Number(selectedPerson.PendingAmount)
+ ){
+   alert(
+     'Payment pending amount-ஐ விட அதிகமாக இருக்கக்கூடாது'
+   );
+   return;
+ }
+
+ try{
+
+   $('sync').textContent='Saving Payment...';
+
+   const result=
+     await api(
+       'addPersonPayment',
+       {
+         data:{
+           PersonID:selectedPerson.ID,
+           Amount:amount,
+           Date:$('payDate').value,
+           PaymentMode:$('payMode').value
+         }
+       }
+     );
+
+   if(!result.success)
+     throw new Error(
+       result.message||'Payment failed'
+     );
+
+   closePayment();
+
+   await loadData();
+
+   openPerson(selectedPerson.ID);
+
+ }catch(e){
+
+   alert(e.message);
+
+ }
+}
+
+
+/* ================= ANALYSIS ================= */
+
+function renderAnalysis(){
+
+ const month=$('analysisMonth').value;
+ const year=String($('analysisYear').value);
+
+ let mi=0;
+ let me=0;
+
+ const cats={};
+
+ DATA.transactions.forEach(t=>{
+
+   const a=Number(t.Amount)||0;
+
+   if(t.Month===month){
+
+     if(t.Type==='Income')
+       mi+=a;
+
+     if(t.Type==='Expense'){
+
+       me+=a;
+
+       cats[t.Category]=
+         (cats[t.Category]||0)+a;
+     }
+   }
+
+ });
+
+ let yi=0;
+ let ye=0;
+
+ DATA.transactions.forEach(t=>{
+
+   if(String(t.Year)===year){
+
+     const a=Number(t.Amount)||0;
+
+     if(t.Type==='Income')yi+=a;
+     if(t.Type==='Expense')ye+=a;
+   }
+
+ });
+
+ const rows=
+   Object.entries(cats)
+   .sort((a,b)=>b[1]-a[1])
+   .map(x=>`
+
+   <div class="analysis-row">
+   <span>📁 ${esc(x[0])}</span>
+   <b>${money(x[1])}</b>
+   </div>
+
+   `).join('');
+
+ $('analysisContent').innerHTML=`
+
+ <div class="cards">
+
+ <div class="card c-income">
+ <small>Month Income</small>
+ <div class="amount green">
+ ${money(mi)}
+ </div>
+ </div>
+
+ <div class="card c-expense">
+ <small>Month Expense</small>
+ <div class="amount red">
+ ${money(me)}
+ </div>
+ </div>
+
+ <div class="card c-balance">
+ <small>Month Savings</small>
+ <div class="amount blue">
+ ${money(mi-me)}
+ </div>
+ </div>
+
+ <div class="card c-income">
+ <small>${year} Income</small>
+ <div class="amount green">
+ ${money(yi)}
+ </div>
+ </div>
+
+ <div class="card c-expense">
+ <small>${year} Expense</small>
+ <div class="amount red">
+ ${money(ye)}
+ </div>
+ </div>
+
+ <div class="card c-balance">
+ <small>${year} Balance</small>
+ <div class="amount blue">
+ ${money(yi-ye)}
+ </div>
+ </div>
+
+ </div>
+
+ <br>
+
+ <div class="form">
+
+ <h3>📊 Expense Categories</h3>
+
+ ${rows || '<div class="empty">No expense data</div>'}
+
+ </div>
+
+ `;
+
+}
+
+
+/* ================= STATEMENT ================= */
+
+function renderStatement(){
+
+ const month=$('statementMonth').value;
+
+ const arr=
+   DATA.transactions
+   .filter(t=>t.Month===month)
+   .sort((a,b)=>
+     new Date(a.Date)-new Date(b.Date)
+   );
+
+ let balance=0;
+
+ const rows=arr.map(t=>{
+
+   const a=Number(t.Amount)||0;
+
+   if(t.Type==='Income')
+     balance+=a;
+   else
+     balance-=a;
+
+   return `
+
+   <tr>
+
+   <td>${date(t.Date)}</td>
+
+   <td>${esc(t.Category)}</td>
+
+   <td>
+   ${t.Type==='Income'?'🟢':'🔴'}
+   </td>
+
+   <td>
+   ${t.Type==='Income'?money(a):''}
+   </td>
+
+   <td>
+   ${t.Type==='Expense'?money(a):''}
+   </td>
+
+   <td><b>${money(balance)}</b></td>
+
+   </tr>
+
+   `;
+
+ }).join('');
+
+ $('statementContent').innerHTML=`
+
+ <div class="form">
+
+ <h2>📄 Monthly Statement</h2>
+
+ <div class="table-wrap">
+
+ <table>
+
+ <tr>
+ <th>Date</th>
+ <th>Category</th>
+ <th>Type</th>
+ <th>Income</th>
+ <th>Expense</th>
+ <th>Balance</th>
+ </tr>
+
+ ${rows ||
+ '<tr><td colspan="6">No data</td></tr>'}
+
+ </table>
+
+ </div>
+
+ </div>
+
+ `;
+
+}
+
+
+/* ================= SETTINGS ================= */
+
+async function saveSetting(){
+
+ try{
+
+   await api(
+     'saveSetting',
+     {
+       key:'currency',
+       value:$('currency').value || '₹'
+     }
+   );
+
+   alert('Settings saved');
+
+ }catch(e){
+
+   alert(e.message);
+
+ }
+}
+
+
+/* ================= HELPERS ================= */
+
+function money(n){
+
+ return '₹'+
+   Number(n||0)
+   .toLocaleString('en-IN',{
+     maximumFractionDigits:0
+   });
+}
+
+function date(v){
+
+ if(!v)return '-';
+
+ const d=new Date(v);
+
+ if(isNaN(d))return v;
+
+ return d.toLocaleDateString('en-IN');
+}
+
+function esc(v){
+
+ return String(v??'')
+ .replace(/&/g,'&amp;')
+ .replace(/</g,'&lt;')
+ .replace(/>/g,'&gt;')
+ .replace(/"/g,'&quot;')
+ .replace(/'/g,'&#039;');
+}
+
+
+/* ================= START ================= */
+
+loadData();
+
+/*
+  Auto sync every 10 seconds.
+  No localStorage is used.
+*/
+
+setInterval(()=>{
+ loadData();
+},10000);
+
+</script>
+
+</body>
+</html>
+```
